@@ -22,6 +22,7 @@ import {
 import { motion, AnimatePresence } from 'motion/react';
 import { BOUTIQUE_PRODUCTS, CLIENT_REVIEWS, BOUTIQUE_STORIES } from './data';
 import { Product, CartItem, Review, Story } from './types';
+import PremiumCustomCursor from './components/PremiumCustomCursor';
 
 // Device Performance / Fluidity optimization hook
 function useDevicePerformance() {
@@ -1080,6 +1081,9 @@ Merci !`;
   return (
     <div id="page-wrapper" className="min-h-screen bg-gradient-to-tr from-[#eef6f9] via-[#f4fafc] to-[#ebf4f8] text-zinc-900 font-sans antialiased flex flex-col items-center py-0 px-0 relative overflow-x-hidden selection:bg-red-200">
       
+      {/* High Performance Premium Custom Desktop Cursor */}
+      <PremiumCustomCursor />
+
       {/* Subtle Repeating Brand Logo Watermarks across the entire site background */}
       <div 
         className="absolute inset-0 pointer-events-none opacity-[0.015] select-none z-0 filter grayscale" 
