@@ -134,36 +134,9 @@ export default function App() {
     localStorage.setItem('strollo_products', JSON.stringify(newProducts));
   };
 
-  // Secret routing checking for separate but connected Administration Space
-  const [isAdminRoute, setIsAdminRoute] = useState<boolean>(() => {
-    return window.location.hash === '#admin' || window.location.search.includes('admin=');
-  });
-
-  useEffect(() => {
-    const checkRoute = () => {
-      const active = window.location.hash === '#admin' || window.location.search.includes('admin=');
-      setIsAdminRoute(active);
-    };
-    window.addEventListener('hashchange', checkRoute);
-    window.addEventListener('popstate', checkRoute);
-    const interval = setInterval(checkRoute, 1000);
-    return () => {
-      window.removeEventListener('hashchange', checkRoute);
-      window.removeEventListener('popstate', checkRoute);
-      clearInterval(interval);
-    };
-  }, []);
-
-  const navigateToAdmin = (active: boolean) => {
-    if (active) {
-      window.location.hash = '#admin';
-    } else {
-      window.location.hash = '';
-      const cleanUrl = window.location.origin + window.location.pathname;
-      window.history.replaceState({}, document.title, cleanUrl);
-    }
-    setIsAdminRoute(active);
-  };
+  // Secret routing checking for separate but connected Administration Space has been disabled per user request
+  const isAdminRoute = false;
+  const navigateToAdmin = (active: boolean) => {};
 
   // Administration Panel States
   const [adminUser, setAdminUser] = useState<string>(() => localStorage.getItem('strollo_admin_username') || '');
@@ -1146,12 +1119,12 @@ Merci !`;
       initial={{ opacity: 0, scale: 0.985 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-      className="min-h-screen bg-gradient-to-tr from-[#eef6f9] via-[#f4fafc] to-[#ebf4f8] text-zinc-900 font-sans antialiased flex flex-col items-center py-0 px-0 relative overflow-x-hidden selection:bg-red-200"
+      className="min-h-screen bg-gradient-to-tr from-[#f8fafc] via-[#f1f5f9] to-[#edf2f7] text-zinc-900 font-sans antialiased flex flex-col items-center py-0 px-0 relative overflow-x-hidden selection:bg-red-200"
     >
       
       {/* Subtle Repeating Brand Logo Watermarks across the entire site background */}
       <div 
-        className="absolute inset-0 pointer-events-none opacity-[0.015] select-none z-0 filter grayscale" 
+        className="absolute inset-0 pointer-events-none opacity-[0.008] select-none z-0 filter grayscale contrast-125 brightness-110" 
         style={{ 
           backgroundImage: `url(${strolloLogo})`,
           backgroundRepeat: 'repeat',
@@ -1161,9 +1134,9 @@ Merci !`;
 
       {/* Premium Minimalist Blueprint Grid / Dot Pattern */}
       <div 
-        className="absolute inset-0 pointer-events-none opacity-[0.4] select-none z-0" 
+        className="absolute inset-0 pointer-events-none opacity-[0.25] select-none z-0" 
         style={{ 
-          backgroundImage: 'radial-gradient(#d3e3eb 1.2px, transparent 1.2px)', 
+          backgroundImage: 'radial-gradient(#94a3b8 1px, transparent 1px)', 
           backgroundSize: '24px 24px' 
         }} 
       />
@@ -1226,7 +1199,7 @@ Merci !`;
                 <div className="flex items-center gap-1.5">
                   <button 
                     onClick={() => setIsCartOpen(true)} 
-                    className="relative p-1.5 rounded-full hover:bg-zinc-100 text-black transition-colors cursor-pointer"
+                    className="relative p-1.5 rounded-full hover:bg-zinc-100 text-black transition-all hover:scale-110 active:scale-95 duration-200 cursor-pointer"
                     id="shopping-bag-header-btn"
                   >
                     <ShoppingBag className="w-4 h-4" />
@@ -1314,15 +1287,15 @@ Merci !`;
 
                 {/* Social icons */}
                 <div className="flex items-center gap-2.5">
-                  <a href="#instagram" className="w-8 h-8 rounded-full border border-zinc-200 flex items-center justify-center text-zinc-700 hover:text-red-500 hover:border-red-500 transition-all">
+                  <a href="#instagram" className="w-8 h-8 rounded-full border border-zinc-200 flex items-center justify-center text-zinc-700 hover:text-red-500 hover:border-red-500 hover:scale-110 active:scale-90 transition-all duration-350">
                     <Instagram className="w-3.5 h-3.5" />
                   </a>
-                  <a href="https://wa.me/22664284773" className="w-8 h-8 rounded-full border border-zinc-200 flex items-center justify-center text-zinc-700 hover:text-red-500 hover:border-red-500 transition-all">
+                  <a href="https://wa.me/22664284773" className="w-8 h-8 rounded-full border border-zinc-200 flex items-center justify-center text-zinc-700 hover:text-red-500 hover:border-red-500 hover:scale-110 active:scale-90 transition-all duration-350">
                     <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
                       <path d="M12.004 0C5.378 0 .004 5.374.004 12c0 2.112.551 4.167 1.597 5.978L0 24l6.191-1.625A11.93 11.93 0 0012.004 24c6.623 0 12-5.374 12-12s-5.377-12-12-12zm6.653 17.151c-.266.751-1.341 1.373-1.854 1.412-.511.037-.999.208-3.197-.677-2.812-1.134-4.609-3.99-4.75-4.177-.14-.187-.999-1.328-.999-2.531s.631-1.796.855-2.039c.224-.243.489-.304.653-.304.164 0 .327.001.469.006.148.005.347-.056.543.418.2.484.693 1.688.755 1.812.062.125.103.271.02.438-.083.167-.124.271-.249.418-.124.145-.262.324-.374.435-.125.122-.256.255-.11.503.146.248.65 1.071 1.393 1.733.959.851 1.762 1.114 2.012 1.238.25.124.396.103.543-.062.148-.166.633-.738.802-.988.17-.25.337-.208.566-.123.23.085 1.458.687 1.71 1.812.049.25.124.417.062.542z"/>
                     </svg>
                   </a>
-                  <a href="#newsletter" className="w-8 h-8 rounded-full border border-zinc-200 flex items-center justify-center text-zinc-700 hover:text-red-500 hover:border-red-500 transition-all">
+                  <a href="mailto:rubensia065@gmail.com" className="w-8 h-8 rounded-full border border-zinc-200 flex items-center justify-center text-zinc-700 hover:text-red-500 hover:border-red-500 hover:scale-110 active:scale-90 transition-all duration-350">
                     <Mail className="w-3.5 h-3.5" />
                   </a>
                 </div>
@@ -1340,7 +1313,7 @@ Merci !`;
                         setActiveStory(story);
                         setActiveStoryIdx(0);
                       }}
-                      className="flex flex-col items-center gap-1 flex-shrink-0 group cursor-pointer focus:outline-none"
+                      className="flex flex-col items-center gap-1 flex-shrink-0 group cursor-pointer focus:outline-none hover:scale-[1.06] active:scale-95 transition-all duration-300"
                     >
                       <div className="p-0.5 rounded-full border-2 border-red-600 bg-white transition-transform duration-300 group-hover:scale-105">
                         <img
@@ -1409,7 +1382,7 @@ Merci !`;
                     <button
                       key={cat.id}
                       onClick={() => setSelectedCategory(cat.id)}
-                      className={`text-[10.5px] uppercase tracking-wider font-extrabold transition-all shrink-0 cursor-pointer flex items-center gap-1.5 px-3 py-1.5 rounded-full border ${
+                      className={`text-[10.5px] uppercase tracking-wider font-extrabold transition-all shrink-0 cursor-pointer flex items-center gap-1.5 px-3 py-1.5 rounded-full border hover:scale-[1.05] active:scale-95 duration-200 ${
                         selectedCategory === cat.id 
                           ? 'text-red-600 bg-red-55 border-red-200/60 shadow-sm' 
                           : 'text-zinc-500 bg-white border-zinc-200/60 hover:bg-zinc-50/80 hover:text-zinc-800'
@@ -1457,7 +1430,7 @@ Merci !`;
                         <div 
                           key={p.id}
                           onClick={() => setSelectedProduct(p)}
-                          className="group bg-white rounded-2xl p-2.5 flex flex-col border border-zinc-100 shadow-[0_4px_12px_rgba(0,0,0,0.02)] hover:border-red-650 hover:border-red-600/30 hover:shadow-[0_8px_24px_rgba(220,38,38,0.06)] hover:-translate-y-0.5 transition-all duration-300 cursor-pointer relative"
+                          className="group bg-white rounded-2xl p-2.5 flex flex-col border border-zinc-100 shadow-[0_4px_12px_rgba(0,0,0,0.02)] hover:border-red-650 hover:border-red-600/30 hover:shadow-[0_8px_24px_rgba(220,38,38,0.06)] hover:scale-[1.03] active:scale-[0.99] transition-all duration-300 cursor-pointer relative"
                         >
                           {/* Favorite button */}
                           <button
@@ -1527,46 +1500,7 @@ Merci !`;
                 )}
               </div>
 
-               {/* VIP CLUB NEWSLETTER */}
-              <div id="newsletter" className="mx-4 mt-6 mb-4 p-5 rounded-3xl bg-zinc-50 border border-zinc-100 text-center relative overflow-hidden">
-                <h3 className="font-sans text-xs font-black text-black tracking-wide uppercase mb-1">
-                  Rejoignez le Club VIP STROLLO
-                </h3>
-                <p className="text-[11px] text-zinc-500 mb-4 px-4 leading-relaxed">
-                  Abonnez-vous pour être informé en premier lors des arrivages exclusifs de baskets, crocs de prestige et ventes privées.
-                </p>
 
-                {!isSubscribed ? (
-                  <form onSubmit={handleNewsletterSubmit} className="flex gap-2 max-w-sm mx-auto">
-                    <input 
-                      type="email" 
-                      placeholder="Votre adresse e-mail" 
-                      required
-                      value={subscriptionEmail}
-                      onChange={(e) => setSubscriptionEmail(e.target.value)}
-                      className="flex-grow bg-white text-xs px-3 py-2.5 rounded-xl border border-zinc-200 text-zinc-900 focus:ring-1 focus:ring-red-600 outline-none"
-                    />
-                    <button 
-                      type="submit"
-                      className="bg-black hover:bg-red-600 text-white px-4 py-2.5 rounded-xl text-xs font-bold transition-all duration-300 cursor-pointer shadow-sm active:scale-95 flex items-center justify-center gap-1.5"
-                    >
-                      Recevoir
-                    </button>
-                  </form>
-                ) : (
-                  <motion.div 
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    className="p-3 bg-emerald-50/50 border border-emerald-200 rounded-xl flex flex-col items-center justify-center gap-2"
-                  >
-                    <div className="w-6 h-6 rounded-full bg-emerald-600 text-white flex items-center justify-center">
-                      <Check className="w-3.5 h-3.5 stroke-[3]" />
-                    </div>
-                    <p className="text-[11px] text-emerald-950 font-semibold mb-0">Inscription réussie !</p>
-                    <p className="text-[10px] text-zinc-500">Bienvenue dans le club. Vous recevrez nos alertes arrivages de prestige très bientôt.</p>
-                  </motion.div>
-                )}
-              </div>
 
               {/* WHATSAPP SUPPORT */}
               <div id="customer-support-section" className="mx-4 mt-4 p-5 rounded-3xl bg-zinc-50 border border-zinc-100 text-center relative overflow-hidden">
@@ -1669,12 +1603,6 @@ Merci !`;
               <div className="px-5 py-8 mt-4 text-center border-t border-zinc-100 select-none text-[10px] text-zinc-400 leading-normal font-sans">
                 <p className="font-extrabold text-zinc-800">© 2026 STROLLO SNEAKERS. Tous droits réservés.</p>
                 <p className="mt-1">Boutique physique à Karpala près de la Clinique Kassam, Ouagadougou.</p>
-                <button
-                  onClick={() => navigateToAdmin(true)}
-                  className="mt-4 px-3 py-1.5 bg-zinc-100/80 hover:bg-zinc-200/90 text-zinc-600 rounded-lg text-[9px] font-bold tracking-wider uppercase transition-all inline-flex items-center gap-1 cursor-pointer border border-zinc-200/60 shadow-sm"
-                >
-                  🔒 Gérer ma Boutique (Admin)
-                </button>
               </div>
 
             </div> {/* Viewport ends */}
@@ -1927,7 +1855,7 @@ Merci !`;
                             addToCart(selectedProduct);
                             setSelectedProduct(null);
                           }}
-                          className="flex-1 bg-black hover:bg-red-600 text-white text-xs font-extrabold tracking-widest uppercase py-3.5 rounded-xl transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer shadow"
+                          className="flex-1 bg-black hover:bg-red-650 hover:scale-[1.035] active:scale-95 text-white text-xs font-extrabold tracking-widest uppercase py-3.5 rounded-xl transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer shadow-md hover:shadow-lg"
                         >
                           <ShoppingBag className="w-4 h-4" />
                           Ajouter au Panier
@@ -1939,6 +1867,8 @@ Merci !`;
                 </div>
               )}
             </AnimatePresence>
+
+
 
             {/* SHOPPING BAG SHEET */}
             <AnimatePresence>
@@ -1994,7 +1924,9 @@ Merci !`;
                                 
                                 <div className="flex-grow">
                                   <h3 className="text-xs font-extrabold text-zinc-900 line-clamp-1">{item.product.name}</h3>
-                                  <span className="text-[10px] text-zinc-450 uppercase font-semibold">{item.product.category} • {item.product.price.toLocaleString()} F</span>
+                                  <span className="text-[10px] text-zinc-450 uppercase font-semibold">
+                                    {item.product.category} • {item.product.price.toLocaleString()} F
+                                  </span>
                                   
                                   <div className="flex items-center gap-2 mt-1.5 select-none">
                                     <button 
@@ -2331,7 +2263,7 @@ Merci !`;
                               href={getWhatsAppOrderLink()}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="w-full bg-[#25D366] hover:bg-[#20ba59] text-white text-xs font-bold uppercase py-3.5 rounded-xl flex items-center justify-center gap-2 transition-all shadow-md mb-3 cursor-pointer select-none text-center"
+                              className="w-full bg-[#25D366] hover:bg-[#20ba59] hover:scale-[1.025] active:scale-95 text-white text-xs font-bold uppercase py-3.5 rounded-xl flex items-center justify-center gap-2 transition-all duration-300 shadow-md mb-3 cursor-pointer select-none text-center"
                               onClick={() => {
                                 setOrderFinished(true);
                                 setCart([]); // Reset actual basket/cart size to zero
@@ -2348,7 +2280,7 @@ Merci !`;
                                 setIsCartOpen(false);
                                 window.scrollTo({ top: 0, behavior: 'smooth' });
                               }}
-                              className="w-full bg-zinc-900 hover:bg-black text-white text-xs font-bold py-3.5 rounded-xl transition-all cursor-pointer text-center"
+                              className="w-full bg-zinc-900 hover:bg-black hover:scale-[1.025] active:scale-95 text-white text-xs font-bold py-3.5 rounded-xl transition-all duration-300 cursor-pointer text-center"
                             >
                               Retour au Catalogue
                             </button>
