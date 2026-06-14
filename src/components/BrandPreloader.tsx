@@ -91,16 +91,79 @@ export default function BrandPreloader({ onComplete }: BrandPreloaderProps) {
       animate={{ opacity: startFadeOut ? 0 : 1 }}
       transition={{ duration: 0.5, ease: "easeInOut" }}
     >
-      {/* Background Decorative Glow Circles */}
-      <div className="absolute w-[400px] h-[400px] rounded-full bg-red-650/10 blur-[120px] pointer-events-none -top-20 -left-20 animate-pulse duration-[4s]" />
-      <div className="absolute w-[500px] h-[500px] rounded-full bg-red-600/10 blur-[150px] pointer-events-none -bottom-30 -right-30 animate-pulse duration-[6s]" />
+      {/* Dynamic Animated Colorful Orbs (Mixed Fluid Aurora Background) */}
+      <div className="absolute inset-0 overflow-hidden bg-zinc-950 pointer-events-none">
+        {/* Orb 1: Neon Orange/Red */}
+        <motion.div
+          animate={{
+            x: [-80, 120, -40],
+            y: [-30, 100, -60],
+            scale: [1, 1.25, 0.95],
+          }}
+          transition={{
+            duration: 8,
+            repeat: Infinity,
+            repeatType: "mirror",
+            ease: "easeInOut",
+          }}
+          className="absolute w-[350px] md:w-[600px] h-[350px] md:h-[600px] rounded-full bg-gradient-to-tr from-amber-500/25 via-red-650/30 to-rose-600/35 blur-[80px] md:blur-[120px] -top-20 -left-20"
+        />
+
+        {/* Orb 2: Vibrant Purple/Pink/Indigo */}
+        <motion.div
+          animate={{
+            x: [120, -100, 60],
+            y: [40, 160, -30],
+            scale: [1.2, 0.85, 1.1],
+          }}
+          transition={{
+            duration: 10,
+            repeat: Infinity,
+            repeatType: "mirror",
+            ease: "easeInOut",
+          }}
+          className="absolute w-[400px] md:w-[650px] h-[400px] md:h-[650px] rounded-full bg-gradient-to-br from-indigo-500/25 via-purple-600/35 to-pink-500/30 blur-[90px] md:blur-[130px] -bottom-24 -right-16"
+        />
+
+        {/* Orb 3: Radiant Gold/Fuchsia Pop */}
+        <motion.div
+          animate={{
+            x: [40, -60, 20],
+            y: [150, -40, 80],
+            scale: [0.9, 1.15, 1],
+          }}
+          transition={{
+            duration: 7,
+            repeat: Infinity,
+            repeatType: "mirror",
+            ease: "easeInOut",
+          }}
+          className="absolute w-[300px] md:w-[500px] h-[300px] md:h-[500px] rounded-full bg-gradient-to-tr from-yellow-500/20 via-pink-600/25 to-red-500/25 blur-[70px] md:blur-[110px] top-1/4 left-1/4"
+        />
+
+        {/* Orb 4: Energetic Turquoise/Vivid Blue to add luxury contrast */}
+        <motion.div
+          animate={{
+            x: [-100, 60, -20],
+            y: [60, -80, 100],
+            scale: [0.8, 1.1, 0.9],
+          }}
+          transition={{
+            duration: 9,
+            repeat: Infinity,
+            repeatType: "mirror",
+            ease: "easeInOut",
+          }}
+          className="absolute w-[250px] md:w-[450px] h-[250px] md:h-[450px] rounded-full bg-gradient-to-tr from-cyan-500/20 via-teal-600/15 to-indigo-600/25 blur-[80px] md:blur-[110px] bottom-1/4 right-1/4"
+        />
+      </div>
 
       {/* Grid pattern overlays for high-end aesthetic */}
       <div 
-        className="absolute inset-0 pointer-events-none opacity-[0.03]" 
+        className="absolute inset-0 pointer-events-none opacity-[0.05]" 
         style={{ 
-          backgroundImage: 'radial-gradient(#ffffff 1px, transparent 1px)', 
-          backgroundSize: '20px 20px' 
+          backgroundImage: 'radial-gradient(#ffffff 1.5px, transparent 1.5px)', 
+          backgroundSize: '24px 24px' 
         }} 
       />
 

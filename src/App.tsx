@@ -199,6 +199,17 @@ export default function App() {
   // Interactive States
   const [cart, setCart] = useState<CartItem[]>([]);
   const [isCartOpen, setIsCartOpen] = useState<boolean>(false);
+  const [isDesktop, setIsDesktop] = useState<boolean>(() => {
+    return typeof window !== 'undefined' ? window.innerWidth >= 1024 : false;
+  });
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsDesktop(window.innerWidth >= 1024);
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [wishlist, setWishlist] = useState<string[]>([]);
   
@@ -1671,21 +1682,22 @@ Merci !`;
             {/* FLOATING CART BAR */}
             {cart.length > 0 && !isCartOpen && (
               <motion.button 
-                initial={{ y: 50, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
+                initial={{ y: 50, opacity: 0, scale: 0.95 }}
+                animate={{ y: 0, opacity: 1, scale: 1 }}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
                 onClick={() => {
                   setIsCartOpen(true);
-                  window.scrollTo({ top: 0, behavior: 'smooth' });
                 }}
-                className="absolute bottom-4 left-4 right-4 z-40 bg-black hover:bg-zinc-900 text-white text-xs font-extrabold tracking-widest uppercase py-3.5 px-4 rounded-xl shadow-lg flex items-center justify-between transition-all duration-300 cursor-pointer border border-zinc-800"
+                className="fixed bottom-6 left-4 right-4 md:left-auto md:right-6 md:w-96 z-50 bg-black hover:bg-zinc-900 text-white text-xs font-sans font-black tracking-widest uppercase py-4 px-5 rounded-2xl shadow-[0_20px_40px_rgba(0,0,0,0.3)] flex items-center justify-between transition-all duration-300 cursor-pointer border border-zinc-850"
               >
                 <div className="flex items-center gap-2">
-                  <ShoppingBag className="w-4 h-4 text-red-600" />
+                  <ShoppingBag className="w-5 h-5 text-red-600" />
                   <span>Mon Panier ({cart.reduce((s, c) => s + c.quantity, 0)})</span>
                 </div>
-                <div className="flex items-center gap-1 font-mono">
-                  <span>{cartTotal.toLocaleString()} F</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
+                <div className="flex items-center gap-1.5 font-mono text-zinc-300">
+                  <span className="text-white font-extrabold">{cartTotal.toLocaleString()} F</span>
+                  <ArrowRight className="w-4 h-4 text-red-650 text-red-600" />
                 </div>
               </motion.button>
             )}
@@ -1931,15 +1943,15 @@ Merci !`;
             {/* SHOPPING BAG SHEET */}
             <AnimatePresence>
               {isCartOpen && (
-                <div className="fixed lg:absolute inset-0 bg-black/60 z-[80] flex flex-col justify-end">
-                  <div className="absolute inset-0 -z-10" onClick={() => setIsCartOpen(false)} />
+                <div className="fixed inset-0 bg-black/60 z-[80] flex justify-end items-end lg:items-stretch">
+                  <div className="absolute inset-0 -z-10 bg-black/10" onClick={() => setIsCartOpen(false)} />
                   
                   <motion.div 
-                    initial={{ y: '100%' }}
-                    animate={{ y: 0 }}
-                    exit={{ y: '100%' }}
+                    initial={isDesktop ? { x: '100%' } : { y: '100%' }}
+                    animate={isDesktop ? { x: 0 } : { y: 0 }}
+                    exit={isDesktop ? { x: '100%' } : { y: '100%' }}
                     transition={perf.springTransitionConfig}
-                    className="bg-white rounded-t-3xl max-h-[85%] flex flex-col shadow-2xl relative border-t border-zinc-200 overflow-hidden text-zinc-900"
+                    className="bg-white rounded-t-3xl lg:rounded-t-none lg:rounded-l-3xl h-[85%] lg:h-full max-h-[85%] lg:max-h-full lg:w-[460px] w-full flex flex-col shadow-2xl relative border-t lg:border-t-0 lg:border-l border-zinc-200 overflow-hidden text-zinc-900"
                   >
                     <div className="w-12 h-1 bg-zinc-200 rounded-full mx-auto my-3 shrink-0" />
 
