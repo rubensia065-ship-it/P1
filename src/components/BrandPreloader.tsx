@@ -158,9 +158,102 @@ export default function BrandPreloader({ onComplete }: BrandPreloaderProps) {
         />
       </div>
 
+      {/* Streetwear Product Collage (Shoes, Clothes, Bags) - Highly elegant & blended */}
+      <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden opacity-10 md:opacity-15">
+        {/* Jordan Sneaker (Top Left) */}
+        <motion.div
+          initial={{ y: 20, rotate: -8, scale: 0.95 }}
+          animate={{ y: [0, -15, 0], rotate: [-8, -6, -10, -8] }}
+          transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute top-10 left-[4%] w-32 h-32 md:w-56 md:h-56 origin-center"
+        >
+          <img
+            src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=600&auto=format&fit=crop"
+            alt="Strollo Sneakers Jordan"
+            referrerPolicy="no-referrer"
+            className="w-full h-full object-cover rounded-2xl filter grayscale contrast-[1.1] brightness-[0.7]"
+          />
+        </motion.div>
+
+        {/* Premium Hoodie (Top Right) */}
+        <motion.div
+          initial={{ y: -10, rotate: 6, scale: 0.98 }}
+          animate={{ y: [0, 18, 0], rotate: [6, 9, 4, 6] }}
+          transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute top-[8%] right-[5%] w-28 h-36 md:w-48 md:h-64 origin-center"
+        >
+          <img
+            src="https://images.unsplash.com/photo-1556821840-3a63f95609a7?q=80&w=600&auto=format&fit=crop"
+            alt="Strollo Hoodie"
+            referrerPolicy="no-referrer"
+            className="w-full h-full object-cover rounded-2xl filter grayscale contrast-[1.15] brightness-[0.65]"
+          />
+        </motion.div>
+
+        {/* Nomad Backpack (Bottom Left) */}
+        <motion.div
+          initial={{ y: 15, rotate: 5, scale: 0.96 }}
+          animate={{ y: [0, -20, 0], rotate: [5, 2, 7, 5] }}
+          transition={{ duration: 18, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute bottom-[10%] left-[3%] w-32 h-40 md:w-48 md:h-60 origin-center"
+        >
+          <img
+            src="https://images.unsplash.com/photo-1553062407-98eeb64c6a62?q=80&w=600&auto=format&fit=crop"
+            alt="Strollo Nomad Bag"
+            referrerPolicy="no-referrer"
+            className="w-full h-full object-cover rounded-2xl filter grayscale contrast-[1.1] brightness-[0.7]"
+          />
+        </motion.div>
+
+        {/* Dunk Low Sneaker (Bottom Right) */}
+        <motion.div
+          initial={{ y: -15, rotate: -6, scale: 0.95 }}
+          animate={{ y: [0, 16, 0], rotate: [-6, -3, -9, -6] }}
+          transition={{ duration: 14, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute bottom-[12%] right-[4%] w-36 h-36 md:w-56 md:h-56 origin-center"
+        >
+          <img
+            src="https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?q=80&w=600&auto=format&fit=crop"
+            alt="Strollo Dunk Low"
+            referrerPolicy="no-referrer"
+            className="w-full h-full object-cover rounded-2xl filter grayscale contrast-[1.2] brightness-[0.68]"
+          />
+        </motion.div>
+
+        {/* Varsity Retro Jacket (Middle Left - Desktop Only) */}
+        <motion.div
+          initial={{ y: 0, rotate: 11 }}
+          animate={{ y: [0, 12, -12, 0], rotate: [11, 14, 8, 11] }}
+          transition={{ duration: 16, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute top-[40%] left-[2%] w-28 h-36 md:w-44 md:h-56 origin-center hidden md:block"
+        >
+          <img
+            src="https://images.unsplash.com/photo-1611312449412-6cefac5dc3e4?q=80&w=600&auto=format&fit=crop"
+            alt="Strollo Varsity Jacket"
+            referrerPolicy="no-referrer"
+            className="w-full h-full object-cover rounded-2xl filter grayscale contrast-[1.1] brightness-[0.65]"
+          />
+        </motion.div>
+
+        {/* T-Shirt Oversize (Middle Right - Desktop Only) */}
+        <motion.div
+          initial={{ y: 10, rotate: -10 }}
+          animate={{ y: [0, -14, 14, 0], rotate: [-10, -7, -13, -10] }}
+          transition={{ duration: 19, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute top-[36%] right-[2%] w-28 h-36 md:w-44 md:h-56 origin-center hidden md:block"
+        >
+          <img
+            src="https://images.unsplash.com/photo-1521572267360-ee0c2909d518?q=80&w=600&auto=format&fit=crop"
+            alt="Strollo Oversize Tee"
+            referrerPolicy="no-referrer"
+            className="w-full h-full object-cover rounded-2xl filter grayscale contrast-[1.1] brightness-[0.65]"
+          />
+        </motion.div>
+      </div>
+
       {/* Grid pattern overlays for high-end aesthetic */}
       <div 
-        className="absolute inset-0 pointer-events-none opacity-[0.05]" 
+        className="absolute inset-0 pointer-events-none opacity-[0.05] z-[1]" 
         style={{ 
           backgroundImage: 'radial-gradient(#ffffff 1.5px, transparent 1.5px)', 
           backgroundSize: '24px 24px' 
