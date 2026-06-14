@@ -1,0 +1,74 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Playfair Display", ui-serif, Georgia, serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+}
+
+/* Enable smooth scrolling globally */
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 2rem;
+}
+
+/* Smooth momentum scrolling and smooth scroll for all overflow containers */
+.overflow-y-auto, .overflow-y-scroll, .overflow-x-auto, .overflow-x-scroll {
+  scroll-behavior: smooth !important;
+  -webkit-overflow-scrolling: touch !important;
+}
+
+/* Hide scrollbars but keep functionality */
+.no-scrollbar::-webkit-scrollbar {
+  display: none; /* Safari and Chrome */
+}
+.no-scrollbar {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+/* Premium smooth transitions */
+.transition-all {
+  transition-property: all;
+  transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+  transition-duration: 400ms;
+}
+
+/* Custom fade-in and slide-up micro-animations for high-end feel */
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-slide-up {
+  animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* GPU Accelerated Compositing Layer triggers for ultra fluidity */
+.gpu-accelerated {
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+  will-change: transform;
+}
+
+/* Optimize scroll elements under ProMotion 120Hz */
+.smooth-momentum {
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+  will-change: scroll-position, transform;
+}
+
+/* Rendering containment for complex layouts, skipping offscreen paints */
+.contain-performance {
+  contain: layout style;
+}
+
+
