@@ -24,6 +24,8 @@ import {
 import { motion, AnimatePresence } from 'motion/react';
 import { BOUTIQUE_PRODUCTS, CLIENT_REVIEWS, BOUTIQUE_STORIES } from './data';
 import { Product, CartItem, Review, Story } from './types';
+import strolloLogo from './assets/images/strollo_logo_1781364471188.jpg';
+import BrandPreloader from './components/BrandPreloader';
 
 // Device Performance / Fluidity optimization hook
 function useDevicePerformance() {
@@ -104,6 +106,13 @@ function useDevicePerformance() {
 
 export default function App() {
   const perf = useDevicePerformance();
+  const [showPreloader, setShowPreloader] = useState<boolean>(() => {
+    try {
+      return !sessionStorage.getItem('strollo_shown_intro');
+    } catch (e) {
+      return true;
+    }
+  });
   // Dynamic products database loaded from localStorage
   const [products, setProducts] = useState<Product[]>(() => {
     const saved = localStorage.getItem('strollo_products');
@@ -218,7 +227,7 @@ export default function App() {
     city: 'Ouagadougou',
     zip: 'Karpala',
     phone: '',
-    paymentMethod: 'orange_money',
+    paymentMethod: 'cash',
   });
   
   // Save order details to generate custom WhatsApp links
@@ -408,9 +417,7 @@ export default function App() {
     ).join('\n');
     
     const paymentMethodLabel = 
-      formData.paymentMethod === 'orange_money' ? 'Orange Money 🧡' :
-      formData.paymentMethod === 'wave' ? 'Wave Mobile 💙' :
-      formData.paymentMethod === 'moov_money' ? 'Moov Money 💚' :
+      formData.paymentMethod === 'store_pickup' ? 'Paiement en Boutique (Retrait à Karpala) 🏪' :
       'Espèces à la livraison 💵';
 
     const rawText = `Bonjour STROLLO Sneakers !
@@ -638,7 +645,7 @@ Merci !`;
     },
     {
       q: 'Quels sont vos moyens de paiement acceptés ?',
-      a: 'Nous acceptons les règlements rapides par Orange Money (OM), Wave Mobile Money, Moov Money, ainsi que le paiement en espèces à la livraison ou directement en boutique à Karpala.'
+      a: 'Nous acceptons le règlement en espèces lors de la livraison à votre domicile, ou directement dans notre boutique à Karpala.'
     },
     {
       q: 'Quels sont vos délais de livraison au Burkina Faso ?',
@@ -1109,14 +1116,33 @@ Merci !`;
     );
   }
 
+  if (showPreloader) {
+    return (
+      <BrandPreloader
+        onComplete={() => {
+          setShowPreloader(false);
+          try {
+            sessionStorage.setItem('strollo_shown_intro', 'true');
+          } catch (e) {}
+        }}
+      />
+    );
+  }
+
   return (
-    <div id="page-wrapper" className="min-h-screen bg-gradient-to-tr from-[#eef6f9] via-[#f4fafc] to-[#ebf4f8] text-zinc-900 font-sans antialiased flex flex-col items-center py-0 px-0 relative overflow-x-hidden selection:bg-red-200">
+    <motion.div
+      id="page-wrapper"
+      initial={{ opacity: 0, scale: 0.985 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+      className="min-h-screen bg-gradient-to-tr from-[#eef6f9] via-[#f4fafc] to-[#ebf4f8] text-zinc-900 font-sans antialiased flex flex-col items-center py-0 px-0 relative overflow-x-hidden selection:bg-red-200"
+    >
       
       {/* Subtle Repeating Brand Logo Watermarks across the entire site background */}
       <div 
         className="absolute inset-0 pointer-events-none opacity-[0.015] select-none z-0 filter grayscale" 
         style={{ 
-          backgroundImage: "url('/src/assets/images/strollo_logo_1781364471188.jpg')",
+          backgroundImage: `url(${strolloLogo})`,
           backgroundRepeat: 'repeat',
           backgroundSize: '110px 110px',
         }} 
@@ -1134,7 +1160,7 @@ Merci !`;
       {/* Decorative Brand Watermark Logo Layers - "somewhat in the foreground but less visible" */}
       <div className="absolute top-[18%] left-[-160px] md:left-[-100px] w-[500px] h-[500px] md:w-[650px] md:h-[650px] opacity-[0.035] pointer-events-none select-none z-0 transform -rotate-12 transition-transform duration-[4000ms] ease-out">
         <img 
-          src="/src/assets/images/strollo_logo_1781364471188.jpg" 
+          src={strolloLogo} 
           alt="" 
           className="w-full h-full object-contain rounded-full filter grayscale contrast-[1.1]" 
           referrerPolicy="no-referrer"
@@ -1142,7 +1168,7 @@ Merci !`;
       </div>
       <div className="absolute top-[62%] right-[-180px] md:right-[-120px] w-[550px] h-[550px] md:w-[700px] md:h-[700px] opacity-[0.028] pointer-events-none select-none z-0 transform rotate-45 transition-transform duration-[5000ms] ease-out">
         <img 
-          src="/src/assets/images/strollo_logo_1781364471188.jpg" 
+          src={strolloLogo} 
           alt="" 
           className="w-full h-full object-contain rounded-full filter grayscale contrast-[1.1]" 
           referrerPolicy="no-referrer"
@@ -1219,7 +1245,7 @@ Merci !`;
                 >
                   <div className="w-full h-full rounded-full overflow-hidden bg-black flex items-center justify-center text-white text-3xl font-extrabold italic relative">
                     <img 
-                      src="/src/assets/images/strollo_logo_1781364471188.jpg" 
+                      src={strolloLogo} 
                       alt="STROLLO Sneakers Logo" 
                       referrerPolicy="no-referrer"
                       className="w-full h-full object-cover rounded-full group-hover:scale-110 transition-transform duration-500"
@@ -1264,9 +1290,6 @@ Merci !`;
 
                 {/* Micro Value badges */}
                 <div className="flex flex-wrap justify-center gap-1.5 mb-5 select-none animate-fade-in">
-                  <span className="text-[9.5px] bg-orange-50 text-[#FF6600] border border-orange-100/60 px-2.5 py-0.5 rounded-full font-sans font-black flex items-center gap-1">
-                    🧡 Orange Money & Wave Acceptés
-                  </span>
                   <span className="text-[9px] bg-zinc-100 text-zinc-900 px-2.5 py-0.5 rounded-full font-bold">
                     ✦ Baskets Exclusives
                   </span>
@@ -2144,16 +2167,14 @@ Merci !`;
                             <label className="block text-[10px] font-bold text-zinc-900 uppercase tracking-wider mb-2">Mode de règlement préféré</label>
                             <div className="grid grid-cols-2 gap-2 text-zinc-900 select-all">
                               {[
-                                { id: 'orange_money', label: 'Orange Money 🧡', desc: 'Faire un dépôt OM' },
-                                { id: 'wave', label: 'Wave Mobile 💙', desc: 'Transfert Wave rapide' },
-                                { id: 'moov_money', label: 'Moov Money 💚', desc: 'Moov Flooz' },
-                                { id: 'cash', label: 'Espèces à la livraison 💵', desc: 'À la remise du colis' }
+                                { id: 'cash', label: 'Espèces à la livraison 💵', desc: 'À la remise du colis' },
+                                { id: 'store_pickup', label: 'Retrait en boutique 🏪', desc: 'Paiement direct à Karpala' }
                               ].map((option) => (
                                 <label 
                                   key={option.id}
                                   className={`p-3 rounded-xl border flex flex-col cursor-pointer transition-all ${
                                     formData.paymentMethod === option.id 
-                                      ? 'border-orange-500 bg-orange-50/20 shadow-sm font-bold' 
+                                      ? 'border-red-600 bg-red-50/20 shadow-sm font-bold' 
                                       : 'border-zinc-200 hover:bg-zinc-50'
                                   }`}
                                 >
@@ -2166,7 +2187,7 @@ Merci !`;
                                     className="sr-only"
                                   />
                                   <span className="text-[11px] font-black">{option.label}</span>
-                                  <span className="text-[9px] text-zinc-400 mt-0.5">{option.desc}</span>
+                                  <span className="text-[9px] text-zinc-450 mt-0.5">{option.desc}</span>
                                 </label>
                               ))}
                             </div>
@@ -2333,6 +2354,6 @@ Merci !`;
 
       </div>
 
-    </div>
+    </motion.div>
   );
 }
