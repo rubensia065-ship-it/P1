@@ -17,12 +17,13 @@ import {
   Sparkles, 
   ShieldCheck, 
   Copy,
-  Trash2
+  Trash2,
+  Search,
+  Filter
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { BOUTIQUE_PRODUCTS, CLIENT_REVIEWS, BOUTIQUE_STORIES } from './data';
 import { Product, CartItem, Review, Story } from './types';
-import PremiumCustomCursor from './components/PremiumCustomCursor';
 
 // Device Performance / Fluidity optimization hook
 function useDevicePerformance() {
@@ -108,7 +109,10 @@ export default function App() {
     const saved = localStorage.getItem('strollo_products');
     if (saved) {
       try {
-        return JSON.parse(saved);
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length >= 20 && parsed.some(p => p.category === 'habits')) {
+          return parsed;
+        }
       } catch (e) {
         console.error('Error parsing strollo_products from localStorage', e);
       }
@@ -172,7 +176,7 @@ export default function App() {
   const [newProdName, setNewProdName] = useState<string>('');
   const [newProdPrice, setNewProdPrice] = useState<string>('');
   const [newProdOriginalPrice, setNewProdOriginalPrice] = useState<string>('');
-  const [newProdCategory, setNewProdCategory] = useState<'baskets' | 'crocs' | 'sandales' | 'accessories'>('baskets');
+  const [newProdCategory, setNewProdCategory] = useState<'habits' | 'chaussures' | 'sacs' | 'lunettes' | 'montres' | 'bijoux' | 'accessoires' | 'casquettes' | 'portefeuilles' | 'autres'>('chaussures');
   const [newProdImage, setNewProdImage] = useState<string>('');
   const [newProdTag, setNewProdTag] = useState<string>('');
   const [newProdDesc, setNewProdDesc] = useState<string>('');
@@ -181,6 +185,7 @@ export default function App() {
 
   // Navigation & Categorization
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [searchTerm, setSearchTerm] = useState<string>('');
   
   // Interactive States
   const [cart, setCart] = useState<CartItem[]>([]);
@@ -645,9 +650,14 @@ Merci !`;
     }
   ];
 
-  const filteredProducts = selectedCategory === 'all' 
-    ? products 
-    : products.filter(p => p.category === selectedCategory);
+  const filteredProducts = products.filter(p => {
+    const matchesCategory = selectedCategory === 'all' || p.category === selectedCategory;
+    const matchesSearch = !searchTerm.trim() || 
+      p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      p.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      p.category.toLowerCase().includes(searchTerm.toLowerCase());
+    return matchesCategory && matchesSearch;
+  });
 
   if (isAdminRoute) {
     return (
@@ -842,10 +852,16 @@ Merci !`;
                         onChange={(e) => setNewProdCategory(e.target.value as any)}
                         className="w-full px-3 py-2 bg-zinc-950 border border-zinc-800 rounded-lg text-xs font-semibold text-white focus:outline-none focus:border-red-500"
                       >
-                        <option value="baskets">Baskets</option>
-                        <option value="crocs">Crocs</option>
-                        <option value="sandales">Sandales</option>
-                        <option value="accessories">Accessoires</option>
+                        <option value="habits">Habits</option>
+                        <option value="chaussures">Chaussures</option>
+                        <option value="sacs">Sacs</option>
+                        <option value="lunettes">Lunettes</option>
+                        <option value="montres">Montres</option>
+                        <option value="bijoux">Bijoux</option>
+                        <option value="accessoires">Accessoires</option>
+                        <option value="casquettes">Casquettes</option>
+                        <option value="portefeuilles">Portefeuilles</option>
+                        <option value="autres">Autres</option>
                       </select>
                     </div>
                   </div>
@@ -989,16 +1005,31 @@ Merci !`;
                 </div>
 
                 {/* Search / Category filter to quickly manage rows */}
-                <div className="flex flex-wrap gap-1">
-                  {['all', 'baskets', 'crocs', 'sandales', 'accessories'].map((cId) => (
-                    <button
-                      key={cId}
-                      onClick={() => setSelectedCategory(cId)}
-                      className={`px-3 py-1 rounded-full text-[10px] font-extrabold uppercase transition-all tracking-wide cursor-pointer ${selectedCategory === cId ? 'bg-red-600 text-white' : 'bg-zinc-950 text-zinc-400 border border-zinc-850 hover:bg-zinc-800'}`}
-                    >
-                      {cId === 'all' ? 'Tous' : cId === 'accessories' ? 'Accessoires' : cId} ({cId === 'all' ? products.length : products.filter(p => p.category === cId).length})
-                    </button>
-                  ))}
+                <div className="flex flex-wrap gap-1 select-none overflow-x-auto no-scrollbar pb-1">
+                  {['all', 'habits', 'chaussures', 'sacs', 'lunettes', 'montres', 'bijoux', 'accessoires', 'casquettes', 'portefeuilles', 'autres'].map((cId) => {
+                    const frenchLabels: Record<string, string> = {
+                      all: 'Tous',
+                      habits: 'Habits',
+                      chaussures: 'Chaussures',
+                      sacs: 'Sacs',
+                      lunettes: 'Lunettes',
+                      montres: 'Montres',
+                      bijoux: 'Bijoux',
+                      accessoires: 'Accessoires',
+                      casquettes: 'Casquettes',
+                      portefeuilles: 'Portefeuilles',
+                      autres: 'Autres'
+                    };
+                    return (
+                      <button
+                        key={cId}
+                        onClick={() => setSelectedCategory(cId)}
+                        className={`px-3 py-1 rounded-full text-[9.5px] font-extrabold uppercase transition-all tracking-wide cursor-pointer ${selectedCategory === cId ? 'bg-red-600 text-white' : 'bg-zinc-950 text-zinc-400 border border-zinc-850 hover:bg-zinc-800'}`}
+                      >
+                        {frenchLabels[cId] || cId} ({cId === 'all' ? products.length : products.filter(p => p.category === cId).length})
+                      </button>
+                    );
+                  })}
                 </div>
 
                 {/* Product live rows with direct price typing! */}
@@ -1081,9 +1112,6 @@ Merci !`;
   return (
     <div id="page-wrapper" className="min-h-screen bg-gradient-to-tr from-[#eef6f9] via-[#f4fafc] to-[#ebf4f8] text-zinc-900 font-sans antialiased flex flex-col items-center py-0 px-0 relative overflow-x-hidden selection:bg-red-200">
       
-      {/* High Performance Premium Custom Desktop Cursor */}
-      <PremiumCustomCursor />
-
       {/* Subtle Repeating Brand Logo Watermarks across the entire site background */}
       <div 
         className="absolute inset-0 pointer-events-none opacity-[0.015] select-none z-0 filter grayscale" 
@@ -1296,14 +1324,49 @@ Merci !`;
                 </div>
               </div>
 
-              {/* CATEGORIES PILLS (FIXED TO DYNAMIC KEYS IN DATA.TS) */}
-              <div id="category-selector" className="flex justify-center space-x-4 mt-2 border-y border-zinc-50 py-2.5 select-none w-full px-4 overflow-x-auto no-scrollbar">
+              {/* ELEGANT & STYLISH SEARCH BAR (RESPONSIVE AND EASY TO REACH) */}
+              <div className="px-4 pt-1 pb-2">
+                <div className="relative max-w-md mx-auto w-full md:max-w-xl">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <Search className="h-4 w-4 text-zinc-400" />
+                  </div>
+                  <input
+                    type="text"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    placeholder="Chercher habits, chaussures, montres..."
+                    className="w-full pl-9 pr-10 py-2.5 bg-white border border-zinc-200/80 rounded-xl text-xs md:text-sm shadow-sm transition-all focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-red-600 text-zinc-800 placeholder-zinc-400"
+                  />
+                  {searchTerm && (
+                    <button
+                      onClick={() => setSearchTerm('')}
+                      className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer text-zinc-400 hover:text-zinc-600 focus:outline-none"
+                    >
+                      <X className="h-4 w-4" />
+                    </button>
+                  )}
+                </div>
+                {searchTerm && (
+                  <p className="text-[10px] text-center text-zinc-400 mt-1">
+                    {filteredProducts.length} {filteredProducts.length > 1 ? 'produits correspondants' : 'produit correspondant'}
+                  </p>
+                )}
+              </div>
+
+              {/* CATEGORIES PILLS (SUPPORTING 10 PREMIUM CATEGORIES) */}
+              <div id="category-selector" className="flex justify-start md:justify-center items-center gap-3 border-y border-zinc-100 py-3 select-none w-full px-4 overflow-x-auto no-scrollbar scroll-smooth">
                 {[
-                  { id: 'all', label: 'Sélection Pro' },
-                  { id: 'baskets', label: 'Baskets' },
-                  { id: 'crocs', label: 'Crocs' },
-                  { id: 'sandales', label: 'Sandales' },
-                  { id: 'accessories', label: 'Accessoires' }
+                  { id: 'all', label: 'Tous' },
+                  { id: 'habits', label: 'Habits' },
+                  { id: 'chaussures', label: 'Chaussures' },
+                  { id: 'sacs', label: 'Sacs' },
+                  { id: 'lunettes', label: 'Lunettes' },
+                  { id: 'montres', label: 'Montres' },
+                  { id: 'bijoux', label: 'Bijoux' },
+                  { id: 'accessoires', label: 'Accessoires' },
+                  { id: 'casquettes', label: 'Casquettes' },
+                  { id: 'portefeuilles', label: 'Portefeuilles' },
+                  { id: 'autres', label: 'Autres' }
                 ].map((cat) => {
                   const count = cat.id === 'all' 
                     ? products.length 
@@ -1312,17 +1375,17 @@ Merci !`;
                     <button
                       key={cat.id}
                       onClick={() => setSelectedCategory(cat.id)}
-                      className={`text-[10px] uppercase tracking-wider font-extrabold transition-all shrink-0 cursor-pointer flex items-center gap-1 ${
+                      className={`text-[10.5px] uppercase tracking-wider font-extrabold transition-all shrink-0 cursor-pointer flex items-center gap-1.5 px-3 py-1.5 rounded-full border ${
                         selectedCategory === cat.id 
-                          ? 'text-red-600 border-b-2 border-red-600 pb-0.5' 
-                          : 'text-zinc-500 hover:text-zinc-800'
+                          ? 'text-red-600 bg-red-55 border-red-200/60 shadow-sm' 
+                          : 'text-zinc-500 bg-white border-zinc-200/60 hover:bg-zinc-50/80 hover:text-zinc-800'
                       }`}
                     >
                       <span>{cat.label}</span>
-                      <span className={`px-1 rounded-md text-[8.5px] font-bold font-mono ${
+                      <span className={`px-1.5 py-0.5 rounded-md text-[9px] font-bold font-mono transition-colors ${
                         selectedCategory === cat.id 
                           ? 'bg-red-600 text-white' 
-                          : 'bg-zinc-100 text-zinc-500'
+                          : 'bg-zinc-150 text-zinc-500'
                       }`}>
                         {count}
                       </span>
@@ -1333,80 +1396,101 @@ Merci !`;
 
               {/* PRODUCTS FLUID GRID */}
               <div id="product-grid" className={`px-4 py-4 flex-grow ${perf.tier === 'high' ? 'contain-performance' : ''}`}>
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 md:gap-6">
-                  {filteredProducts.map((p) => {
-                    const isWish = wishlist.includes(p.id);
-                    return (
-                      <div 
-                        key={p.id}
-                        onClick={() => setSelectedProduct(p)}
-                        className="group bg-white rounded-2xl p-2.5 flex flex-col border border-zinc-100 shadow-[0_4px_12px_rgba(0,0,0,0.02)] hover:border-red-650 hover:border-red-600/30 hover:shadow-[0_8px_24px_rgba(220,38,38,0.06)] hover:-translate-y-0.5 transition-all duration-300 cursor-pointer relative"
-                      >
-                        {/* Favorite button */}
-                        <button
-                          onClick={(e) => toggleWishlist(p.id, e)}
-                          className="absolute top-4 right-4 z-10 w-6 h-6 rounded-full bg-white/95 backdrop-blur-sm flex items-center justify-center text-zinc-450 hover:text-red-600 shadow-sm cursor-pointer"
+                {filteredProducts.length === 0 ? (
+                  <div className="flex flex-col items-center justify-center text-center py-12 px-6 bg-white/60 rounded-3xl border border-zinc-150/50 shadow-[0_4px_16px_rgba(0,0,0,0.01)] max-w-sm mx-auto my-6">
+                    <div className="p-4 bg-zinc-100 text-zinc-500 rounded-full mb-4">
+                      <Filter className="w-5 h-5 text-zinc-400" />
+                    </div>
+                    <h3 className="text-xs font-black uppercase tracking-wider text-zinc-800">Aucun produit trouvé</h3>
+                    <p className="text-[11px] text-zinc-500 mt-2 max-w-[240px] leading-relaxed font-sans">
+                      Désolé, aucun article ne correspond à votre recherche <strong>"{searchTerm}"</strong> dans cette catégorie.
+                    </p>
+                    <button
+                      onClick={() => {
+                        setSearchTerm('');
+                        setSelectedCategory('all');
+                      }}
+                      className="mt-5 px-4 py-2 bg-black hover:bg-red-600 text-white text-[10px] font-extrabold uppercase tracking-widest rounded-xl transition-all shadow-sm cursor-pointer"
+                    >
+                      Tout réinitialiser
+                    </button>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 md:gap-6">
+                    {filteredProducts.map((p) => {
+                      const isWish = wishlist.includes(p.id);
+                      return (
+                        <div 
+                          key={p.id}
+                          onClick={() => setSelectedProduct(p)}
+                          className="group bg-white rounded-2xl p-2.5 flex flex-col border border-zinc-100 shadow-[0_4px_12px_rgba(0,0,0,0.02)] hover:border-red-650 hover:border-red-600/30 hover:shadow-[0_8px_24px_rgba(220,38,38,0.06)] hover:-translate-y-0.5 transition-all duration-300 cursor-pointer relative"
                         >
-                          <Heart className={`w-3 h-3 ${isWish ? 'fill-red-600 text-red-600' : 'text-zinc-400'}`} />
-                        </button>
+                          {/* Favorite button */}
+                          <button
+                            onClick={(e) => toggleWishlist(p.id, e)}
+                            className="absolute top-4 right-4 z-10 w-6 h-6 rounded-full bg-white/95 backdrop-blur-sm flex items-center justify-center text-zinc-450 hover:text-red-600 shadow-sm cursor-pointer"
+                          >
+                            <Heart className={`w-3 h-3 ${isWish ? 'fill-red-600 text-red-600' : 'text-zinc-400'}`} />
+                          </button>
 
-                        {/* Floating Hot tag */}
-                        {p.tag && (
-                          <div className="absolute top-4 left-4 z-10 bg-black text-white text-[8px] font-extrabold uppercase tracking-widest px-2 py-0.5 rounded">
-                            {p.tag}
+                          {/* Floating Hot tag */}
+                          {p.tag && (
+                            <div className="absolute top-4 left-4 z-10 bg-black text-white text-[8px] font-extrabold uppercase tracking-widest px-2 py-0.5 rounded">
+                              {p.tag}
+                            </div>
+                          )}
+
+                          {/* Product image container */}
+                          <div className="w-full aspect-square bg-zinc-50 rounded-xl mb-3 flex items-center justify-center overflow-hidden relative border border-zinc-100">
+                            <img 
+                              src={p.image} 
+                              alt={p.name}
+                              referrerPolicy="no-referrer"
+                              className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500" 
+                            />
                           </div>
-                        )}
 
-                        {/* Product image container */}
-                        <div className="w-full aspect-square bg-zinc-50 rounded-xl mb-3 flex items-center justify-center overflow-hidden relative border border-zinc-100">
-                          <img 
-                            src={p.image} 
-                            alt={p.name}
-                            referrerPolicy="no-referrer"
-                            className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500" 
-                          />
-                        </div>
+                          {/* Product Details */}
+                          <div className="flex-grow flex flex-col justify-between">
+                            <div>
+                              <div className="flex items-center gap-1 mb-1 opacity-75">
+                                <Star className="w-2.5 h-2.5 fill-red-600 text-red-600 stroke-0" />
+                                <span className="text-[9px] font-extrabold font-mono text-zinc-900">{p.rating.toFixed(1)}</span>
+                                <span className="text-[8.5px] text-zinc-450">({p.reviewsCount})</span>
+                              </div>
 
-                        {/* Product Details */}
-                        <div className="flex-grow flex flex-col justify-between">
-                          <div>
-                            <div className="flex items-center gap-1 mb-1 opacity-75">
-                              <Star className="w-2.5 h-2.5 fill-red-600 text-red-600 stroke-0" />
-                              <span className="text-[9px] font-extrabold font-mono text-zinc-900">{p.rating.toFixed(1)}</span>
-                              <span className="text-[8.5px] text-zinc-450">({p.reviewsCount})</span>
+                              <h3 className="text-[11px] font-extrabold tracking-tight text-zinc-900 truncate mb-1 group-hover:text-red-650 group-hover:text-red-600">
+                                {p.name}
+                              </h3>
                             </div>
 
-                            <h3 className="text-[11px] font-extrabold tracking-tight text-zinc-900 truncate mb-1 group-hover:text-red-650 group-hover:text-red-600">
-                              {p.name}
-                            </h3>
-                          </div>
+                            <div>
+                              <p className="text-[11px] text-red-600 font-bold mb-2 font-mono">
+                                {p.price.toLocaleString()} FCFA
+                                {p.originalPrice && (
+                                  <span className="text-[9px] text-zinc-400 line-through ml-1.5 font-normal">
+                                    {p.originalPrice.toLocaleString()} F
+                                  </span>
+                                )}
+                              </p>
 
-                          <div>
-                            <p className="text-[11px] text-red-600 font-bold mb-2 font-mono">
-                              {p.price.toLocaleString()} FCFA
-                              {p.originalPrice && (
-                                <span className="text-[9px] text-zinc-400 line-through ml-1.5 font-normal">
-                                  {p.originalPrice.toLocaleString()} F
-                                </span>
-                              )}
-                            </p>
-
-                            <button
-                              onClick={(e) => {
-                                  e.stopPropagation();
-                                  addToCart(p);
-                                }}
-                              className="w-full py-2 bg-black hover:bg-red-600 text-white text-[9.5px] font-extrabold rounded-lg uppercase tracking-wider transition-all duration-300 flex items-center justify-center gap-1 cursor-pointer active:scale-95"
-                            >
-                              <ShoppingBag className="w-3 h-3" />
-                              Acheter
-                            </button>
+                              <button
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    addToCart(p);
+                                  }}
+                                className="w-full py-2 bg-black hover:bg-red-600 text-white text-[9.5px] font-extrabold rounded-lg uppercase tracking-wider transition-all duration-300 flex items-center justify-center gap-1 cursor-pointer active:scale-95"
+                              >
+                                <ShoppingBag className="w-3 h-3" />
+                                Acheter
+                              </button>
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    );
-                  })}
-                </div>
+                      );
+                    })}
+                  </div>
+                )}
               </div>
 
                {/* VIP CLUB NEWSLETTER */}
@@ -1551,6 +1635,12 @@ Merci !`;
               <div className="px-5 py-8 mt-4 text-center border-t border-zinc-100 select-none text-[10px] text-zinc-400 leading-normal font-sans">
                 <p className="font-extrabold text-zinc-800">© 2026 STROLLO SNEAKERS. Tous droits réservés.</p>
                 <p className="mt-1">Boutique physique à Karpala près de la Clinique Kassam, Ouagadougou.</p>
+                <button
+                  onClick={() => navigateToAdmin(true)}
+                  className="mt-4 px-3 py-1.5 bg-zinc-100/80 hover:bg-zinc-200/90 text-zinc-600 rounded-lg text-[9px] font-bold tracking-wider uppercase transition-all inline-flex items-center gap-1 cursor-pointer border border-zinc-200/60 shadow-sm"
+                >
+                  🔒 Gérer ma Boutique (Admin)
+                </button>
               </div>
 
             </div> {/* Viewport ends */}

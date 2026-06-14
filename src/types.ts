@@ -1,7 +1,7 @@
 export interface Product {
   id: string;
   name: string;
-  category: 'baskets' | 'crocs' | 'sandales' | 'accessories';
+  category: 'habits' | 'chaussures' | 'sacs' | 'lunettes' | 'montres' | 'bijoux' | 'accessoires' | 'casquettes' | 'portefeuilles' | 'autres';
   price: number;
   originalPrice?: number;
   rating: number;
