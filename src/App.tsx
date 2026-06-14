@@ -212,6 +212,7 @@ export default function App() {
     city: 'Ouagadougou',
     zip: 'Karpala',
     phone: '',
+    paymentMethod: 'orange_money',
   });
   
   // Save order details to generate custom WhatsApp links
@@ -400,6 +401,12 @@ export default function App() {
       `- ${item.product.name} (Qté: ${item.quantity}) - ${(item.product.price * item.quantity).toLocaleString()} FCFA`
     ).join('\n');
     
+    const paymentMethodLabel = 
+      formData.paymentMethod === 'orange_money' ? 'Orange Money 🧡' :
+      formData.paymentMethod === 'wave' ? 'Wave Mobile 💙' :
+      formData.paymentMethod === 'moov_money' ? 'Moov Money 💚' :
+      'Espèces à la livraison 💵';
+
     const rawText = `Bonjour STROLLO Sneakers !
 Une nouvelle commande a été passée sur votre boutique.
 
@@ -408,6 +415,7 @@ Une nouvelle commande a été passée sur votre boutique.
 • Téléphone : ${formData.phone}
 • Lieu de livraison : ${formData.address}, ${formData.city} (${formData.zip})
 • E-mail : ${formData.email}
+• Mode de Règlement : ${paymentMethodLabel}
 
 ✦ --- ARTICLES COMMANDÉS --- ✦
 ${itemsText}
@@ -621,6 +629,10 @@ Merci !`;
     {
       q: 'Où se situe exactement votre boutique STROLLO Sneakers ?',
       a: 'Notre boutique physique est idéalement située à Ouagadougou, dans le quartier KARPALA, à proximité immédiate de la Clinique KASSAM 📍. Passez faire un tour pour essayer vos paires favorites !'
+    },
+    {
+      q: 'Quels sont vos moyens de paiement acceptés ?',
+      a: 'Nous acceptons les règlements rapides par Orange Money (OM), Wave Mobile Money, Moov Money, ainsi que le paiement en espèces à la livraison ou directement en boutique à Karpala.'
     },
     {
       q: 'Quels sont vos délais de livraison au Burkina Faso ?',
@@ -1066,12 +1078,48 @@ Merci !`;
   }
 
   return (
-    <div id="page-wrapper" className="min-h-screen bg-[#f0f6f9] lg:bg-zinc-950 text-zinc-100 font-sans antialiased flex flex-col items-center justify-center py-0 lg:py-10 px-0 lg:px-4 relative overflow-x-hidden selection:bg-sky-600/30 selection:text-white">
+    <div id="page-wrapper" className="min-h-screen bg-gradient-to-tr from-[#eef6f9] via-[#f4fafc] to-[#ebf4f8] text-zinc-900 font-sans antialiased flex flex-col items-center py-0 px-0 relative overflow-x-hidden selection:bg-red-200">
       
+      {/* Subtle Repeating Brand Logo Watermarks across the entire site background */}
+      <div 
+        className="absolute inset-0 pointer-events-none opacity-[0.015] select-none z-0 filter grayscale" 
+        style={{ 
+          backgroundImage: "url('/src/assets/images/strollo_logo_1781364471188.jpg')",
+          backgroundRepeat: 'repeat',
+          backgroundSize: '110px 110px',
+        }} 
+      />
+
+      {/* Premium Minimalist Blueprint Grid / Dot Pattern */}
+      <div 
+        className="absolute inset-0 pointer-events-none opacity-[0.4] select-none z-0" 
+        style={{ 
+          backgroundImage: 'radial-gradient(#d3e3eb 1.2px, transparent 1.2px)', 
+          backgroundSize: '24px 24px' 
+        }} 
+      />
+
+      {/* Decorative Brand Watermark Logo Layers - "somewhat in the foreground but less visible" */}
+      <div className="absolute top-[18%] left-[-160px] md:left-[-100px] w-[500px] h-[500px] md:w-[650px] md:h-[650px] opacity-[0.035] pointer-events-none select-none z-0 transform -rotate-12 transition-transform duration-[4000ms] ease-out">
+        <img 
+          src="/src/assets/images/strollo_logo_1781364471188.jpg" 
+          alt="" 
+          className="w-full h-full object-contain rounded-full filter grayscale contrast-[1.1]" 
+          referrerPolicy="no-referrer"
+        />
+      </div>
+      <div className="absolute top-[62%] right-[-180px] md:right-[-120px] w-[550px] h-[550px] md:w-[700px] md:h-[700px] opacity-[0.028] pointer-events-none select-none z-0 transform rotate-45 transition-transform duration-[5000ms] ease-out">
+        <img 
+          src="/src/assets/images/strollo_logo_1781364471188.jpg" 
+          alt="" 
+          className="w-full h-full object-contain rounded-full filter grayscale contrast-[1.1]" 
+          referrerPolicy="no-referrer"
+        />
+      </div>
+
       {/* Premium Multi-Color Background Glowing Accents (Abstract Pale Blue & Sky Blue Orbs) */}
-      <div className="absolute top-10 right-10 w-[450px] h-[450px] bg-gradient-to-br from-sky-500 via-blue-400 to-transparent opacity-[0.08] lg:opacity-[0.08] opacity-0 rounded-full blur-[100px] pointer-events-none" />
-      <div className="absolute bottom-10 left-10 w-[550px] h-[550px] bg-gradient-to-tr from-cyan-900 via-sky-600 to-transparent opacity-[0.08] lg:opacity-[0.08] opacity-0 rounded-full blur-[120px] pointer-events-none" />
-      <div className="absolute top-[40%] left-[25%] w-[350px] h-[350px] bg-sky-400 opacity-[0.03] lg:opacity-[0.03] opacity-0 rounded-full blur-[90px] pointer-events-none" />
+      <div className="absolute top-10 right-10 w-[450px] h-[450px] bg-gradient-to-br from-sky-500 via-blue-400 to-transparent opacity-[0.05] rounded-full blur-[100px] pointer-events-none" />
+      <div className="absolute bottom-10 left-10 w-[550px] h-[550px] bg-gradient-to-tr from-cyan-900 via-sky-600 to-transparent opacity-[0.05] rounded-full blur-[120px] pointer-events-none" />
 
       {/* Action Toast Notification */}
       <AnimatePresence>
@@ -1080,7 +1128,7 @@ Merci !`;
             initial={{ opacity: 0, y: -20, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -10, scale: 0.95 }}
-            className="fixed top-6 z-[100] max-w-sm bg-black text-white px-5 py-3 rounded-xl shadow-2xl border border-zinc-800 flex items-center gap-3"
+            className="fixed top-6 z-[100] max-w-sm bg-black text-white px-5 py-3 rounded-xl shadow-2xl border border-zinc-850 flex items-center gap-3"
             id="toast-notification"
           >
             <div className="w-2.5 h-2.5 rounded-full bg-red-600 animate-pulse" />
@@ -1089,152 +1137,16 @@ Merci !`;
         )}
       </AnimatePresence>
 
-      {/* Main Container */}
-      <div id="aesthetic-showcase-container" className="w-full lg:max-w-6xl grid grid-cols-1 lg:grid-cols-12 gap-0 lg:gap-8 items-center justify-center min-h-screen lg:min-h-0">
+      <div id="aesthetic-showcase-container" className="w-full max-w-6xl mx-auto px-4 md:px-8 py-6 flex flex-col min-h-screen">
         
-        {/* Left Presentation (Desktop only) */}
-        <div id="left-editorial-column" className="hidden lg:flex lg:col-span-6 flex-col justify-center text-left pr-6 animate-slide-up">
-          <div className="inline-flex items-center gap-2 bg-red-600/10 text-red-500 border border-red-600/20 px-3.5 py-1.5 rounded-full text-xs font-bold tracking-widest uppercase mb-6">
-            <Sparkles className="w-3.5 h-3.5 animate-pulse" />
-            BOUTIQUE PREMIUM KARPALA (50+ modèles)
-          </div>
-          <h1 className="font-sans text-5xl xl:text-6xl text-white font-black leading-[1.05] tracking-tight mb-6 uppercase">
-            STROLLO <br />
-            <span className="text-red-600">Sneakers</span>
-          </h1>
-          <p className="text-sm text-zinc-400 mb-8 max-w-md font-medium leading-relaxed">
-            Découvrez notre collection d'exception comprenant plus de <strong className="text-white font-bold">50 modèles exclusifs</strong> de baskets tendance, crocs personnalisés et sandales haut confort.
-          </p>
-
-          <div className="space-y-4 mb-8">
-            <div className="flex items-start gap-4">
-              <div className="w-10 h-10 rounded-xl bg-zinc-900 border border-zinc-800 flex items-center justify-center text-red-500 shadow-inner shrink-0 leading-none font-bold">
-                <MapPin className="w-5 h-5" />
-              </div>
-              <div>
-                <h4 className="text-sm font-bold text-white uppercase tracking-tight">Karpala, Clinique Kassam 📍</h4>
-                <p className="text-xs text-zinc-400 leading-normal mt-0.5">Visitez notre boutique physique pour essayer vos modèles préférés et trouver votre pointure exacte.</p>
-              </div>
-            </div>
-            <div className="flex items-start gap-4">
-              <div className="w-10 h-10 rounded-xl bg-zinc-900 border border-zinc-800 flex items-center justify-center text-red-500 shadow-inner shrink-0 leading-none font-bold">
-                <ShoppingBag className="w-5 h-5" />
-              </div>
-              <div>
-                <h4 className="text-sm font-bold text-white uppercase tracking-tight">Commande Par WhatsApp Direct</h4>
-                <p className="text-xs text-zinc-400 leading-normal mt-0.5">Panier intuitif intégré : validez instantanément auprès de notre équipe au 64.28.47.73.</p>
-              </div>
-            </div>
-          </div>
-
-          {/* Interactive Coupon Board */}
-          <div className="bg-zinc-950 p-5 rounded-2xl border border-zinc-900 shadow-xl max-w-sm">
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-xs uppercase font-extrabold text-red-500 tracking-wider">Lancement Promo</span>
-              <span className="text-xs uppercase font-mono text-zinc-500 font-bold">SOL15</span>
-            </div>
-            <p className="text-xs text-zinc-400 mb-3.5 leading-relaxed">
-              Saisissez le code <strong className="text-white font-extrabold">SOL15</strong> au moment du paiement pour bénéficier de -15% de réduction sur toutes les paires !
-            </p>
-            <button 
-              onClick={copyPromoCode}
-              className="w-full flex items-center justify-center gap-2 bg-zinc-905 hover:bg-red-650 text-xs py-2.5 px-3 rounded-xl border border-zinc-800 hover:border-red-600/30 transition-all cursor-pointer text-white font-bold bg-zinc-900"
-            >
-              {copiedCode ? <Check className="w-3.5 h-3.5 text-red-500" /> : <Copy className="w-3.5 h-3.5 text-zinc-450" />}
-              {copiedCode ? 'Code Copié !' : 'Copier le code : SOL15'}
-            </button>
-          </div>
-
-          {/* Fluidity Optimization Panel */}
-          <div className="bg-zinc-950 p-5 rounded-2xl border border-zinc-900 shadow-xl max-w-sm mt-4 animate-fade-in font-sans">
-            <div className="flex items-center justify-between mb-2.5 pb-2 border-b border-zinc-900">
-              <span className="text-[10px] uppercase font-extrabold text-zinc-400 tracking-wider flex items-center gap-1.5">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block animate-ping" />
-                Optimisation Du Moteur Tactile
-              </span>
-              <span className="text-[9px] px-1.5 py-0.5 rounded bg-red-600/10 text-red-500 font-bold uppercase">
-                {perf.tier.toUpperCase()} SPEED
-              </span>
-            </div>
-            
-            <p className="text-[11px] text-zinc-400 mb-3 leading-relaxed">
-              Nous analysons la puissance globale et le taux de rafraîchissement d'affichage (ProMotion 120Hz ou 60Hz standard) de votre écran pour accorder la fluidité des micro-animations en temps réel.
-            </p>
-
-            <div className="bg-zinc-900 border border-zinc-800 p-2.5 rounded-xl space-y-1.5 font-mono text-[9.5px] text-zinc-300">
-              <div className="flex justify-between">
-                <span>Fréquence d'Affichage estimée :</span>
-                <span className="text-white font-bold">{perf.fps} FPS</span>
-              </div>
-              <div className="flex justify-between">
-                <span>Cœurs CPU disponibles :</span>
-                <span className="text-white font-bold">{perf.cores} Cœurs</span>
-              </div>
-              <div className="flex justify-between">
-                <span>Vitesse d'Animation :</span>
-                <span className="text-red-500 font-bold">
-                  {perf.tier === 'high' ? 'Ultra Fluide / Springs' : perf.tier === 'medium' ? 'Standard / Springs' : 'Éco Activé'}
-                </span>
-              </div>
-              <div className="flex justify-between">
-                <span>Accélération GPU Scroll :</span>
-                <span className="text-emerald-500 font-bold">Actif (will-change)</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Right Smartphone Emulator Column */}
-        <div id="right-device-column" className="lg:col-span-6 flex justify-center w-full min-h-screen lg:min-h-0">
+        {/* Main Direct Web Viewport Area */}
+        <div id="mobile-viewport" className="flex-grow w-full bg-transparent relative flex flex-col pb-24 min-h-screen">
           
-          <div className="w-full lg:max-w-[380px] min-h-screen lg:min-h-[720px] lg:h-[720px] bg-gradient-to-tr from-[#eef6f9] via-[#f4fafc] to-[#ebf4f8] lg:bg-[#f0f6f9] shadow-none lg:shadow-3xl rounded-none lg:rounded-[48px] border-0 lg:border-[10px] lg:border-zinc-900 overflow-hidden flex flex-col relative lg:max-h-[720px] text-zinc-900">
-            
-            {/* Speaker & Notch */}
-            <div className="hidden lg:flex absolute top-0 left-1/2 -translate-x-1/2 w-32 h-6 bg-zinc-900 rounded-b-2xl z-50 items-center justify-center pointer-events-none" />
-
-            {/* Status Bar */}
-            <div className="hidden lg:flex justify-between items-center px-8 pt-4 pb-1.5 bg-[#f0f6f9] text-zinc-900 opacity-70 text-xs font-semibold select-none shrink-0 z-40 border-b border-zinc-100">
-              <span>{phoneTime ? phoneTime.split(' ')[0] : '12:00'}</span>
-              <div className="flex space-x-1.5">
-                <div className="w-3.5 h-3.5 rounded-full border border-zinc-900"></div>
-                <div className="w-3.5 h-3.5 rounded-full bg-zinc-900"></div>
-              </div>
-            </div>
-
-            {/* Simulated Address Header */}
-            <div className="hidden lg:flex items-center justify-between px-4 py-2 bg-zinc-50 border-b border-zinc-100 text-xs select-none shrink-0 z-40">
-              <div className="flex items-center gap-2">
-                <div className="w-3.5 h-3.5 rounded-full bg-red-650 text-red-600 bg-red-100 flex items-center justify-center">
-                  <Lock className="w-2.5 h-2.5" />
-                </div>
-                <span className="font-bold tracking-tight text-[11px] text-zinc-700">strollo-sneakers/bio</span>
-              </div>
-              <button 
-                onClick={() => {
-                  setCart([]);
-                  setWishlist([]);
-                  setSelectedCategory('all');
-                  setActiveStory(null);
-                  setSelectedProduct(null);
-                  setIsCartOpen(false);
-                  showToast('Réinitialisé');
-                }} 
-                className="text-zinc-400 hover:text-red-600 transition-colors cursor-pointer p-0.5"
-                title="Reset simulation"
-              >
-                <RotateCcw className="w-3.5 h-3.5" />
-              </button>
-            </div>
-
-            {/* Mobile Viewport Area */}
-            <div id="mobile-viewport" className={`flex-grow w-full bg-gradient-to-tr from-[#eef6f9] via-[#f4fafc] to-[#ebf4f8] relative flex flex-col pb-24 h-auto lg:flex-1 lg:overflow-y-auto lg:no-scrollbar ${perf.tier === 'high' ? 'smooth-momentum gpu-accelerated' : ''}`}>
-              
-              {/* Elegant simple background matching a pale blue theme with no drawings */}
-              <div className="absolute inset-0 pointer-events-none overflow-hidden select-none z-0">
-                {/* Extremely soft, simple colored gradients that blend nicely with the pale blue site */}
-                <div className="absolute top-[10%] right-[-10%] w-72 h-72 rounded-full bg-blue-300/10 blur-3xl" />
-                <div className="absolute bottom-[20%] left-[-15%] w-80 h-80 rounded-full bg-sky-200/10 blur-3xl" />
-              </div>
+          {/* Elegant simple background decorations */}
+          <div className="absolute inset-0 pointer-events-none overflow-hidden select-none z-0">
+            <div className="absolute top-[10%] right-[-10%] w-72 h-72 rounded-full bg-blue-300/10 blur-3xl" />
+            <div className="absolute bottom-[20%] left-[-15%] w-80 h-80 rounded-full bg-sky-200/10 blur-3xl" />
+          </div>
 
               {/* STICKY GLASSMORPHIC HEADER */}
               <div className={`sticky top-0 z-30 px-4 py-3 flex items-center justify-between ${perf.backdropBlurClass}`}>
@@ -1265,39 +1177,63 @@ Merci !`;
               {/* BIO CONTENT */}
               <div id="bio-header-section" className="flex flex-col items-center pt-6 px-6 text-center">
                 
-                {/* Logo Image */}
-                <div className="relative mb-3.5 w-24 h-24 rounded-full bg-zinc-100 border-2 border-red-600 p-0.5 shadow-md">
-                  <div className="w-full h-full rounded-full overflow-hidden bg-black flex items-center justify-center text-white text-3xl font-extrabold italic">
+                {/* Logo Image with interactive hover animation & subtle load-in */}
+                <motion.div 
+                  initial={{ scale: 0.82, opacity: 0, rotate: -8 }}
+                  animate={{ scale: 1, opacity: 1, rotate: 0 }}
+                  transition={{ type: "spring", stiffness: 100, damping: 15, delay: 0.15 }}
+                  whileHover={{ scale: 1.05, rotate: 2, transition: { duration: 0.2 } }}
+                  className="relative mb-3.5 w-24 h-24 rounded-full bg-zinc-100 border-2 border-red-600 p-0.5 shadow-md cursor-pointer group"
+                >
+                  <div className="w-full h-full rounded-full overflow-hidden bg-black flex items-center justify-center text-white text-3xl font-extrabold italic relative">
                     <img 
                       src="/src/assets/images/strollo_logo_1781364471188.jpg" 
                       alt="STROLLO Sneakers Logo" 
                       referrerPolicy="no-referrer"
-                      className="w-full h-full object-cover rounded-full"
+                      className="w-full h-full object-cover rounded-full group-hover:scale-110 transition-transform duration-500"
                     />
                   </div>
                   {/* Verified badge */}
-                  <div className="absolute bottom-1 right-1 bg-red-600 text-white p-1 rounded-full shadow-md z-20 border-2 border-white">
+                  <motion.div 
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    transition={{ delay: 0.5, type: "spring", stiffness: 150 }}
+                    className="absolute bottom-1 right-1 bg-red-600 text-white p-1 rounded-full shadow-md z-20 border-2 border-white"
+                  >
                     <Check className="w-2.5 h-2.5 stroke-[4.5]" />
-                  </div>
-                </div>
+                  </motion.div>
+                </motion.div>
 
-                <h2 className="text-xl font-black text-black tracking-tight uppercase">
+                {/* Animated "STROLLO Sneakers" Title */}
+                <motion.h2 
+                  initial={{ y: 22, opacity: 0, scale: 0.96 }}
+                  animate={{ y: 0, opacity: 1, scale: 1 }}
+                  transition={{ type: "spring", stiffness: 80, damping: 14, delay: 0.28 }}
+                  className="text-xl font-black text-black tracking-tight uppercase"
+                >
                   STROLLO Sneakers
-                </h2>
-                <p className="text-[10px] uppercase tracking-[0.25em] text-red-600 font-bold mb-3">
+                </motion.h2>
+
+                {/* Animated tagline */}
+                <motion.p 
+                  initial={{ y: 15, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ type: "spring", stiffness: 80, damping: 14, delay: 0.42 }}
+                  className="text-[10px] uppercase tracking-[0.25em] text-red-600 font-bold mb-3"
+                >
                   _ Baskets | Crocs | Sandales _
-                </p>
+                </motion.p>
 
                 <p className="text-xs text-zinc-650 leading-relaxed px-4 mb-4 font-normal">
-                  Boutique à <strong className="text-black font-bold">Karpala près de la Clinique Kassam</strong> 📍. Plus de <strong className="text-red-650 text-red-600 font-bold">50 modèles uniques</strong> de baskets, crocs et sandales de prestige.
+                  Boutique à <strong className="text-black font-bold">Karpala près de la Clinique Kassam</strong> 📍. Une sélection d'exception de baskets, crocs et sandales de prestige.
                 </p>
 
 
 
                 {/* Micro Value badges */}
-                <div className="flex flex-wrap justify-center gap-1.5 mb-5 select-none">
-                  <span className="text-[9px] bg-red-50 text-red-600 px-2.5 py-0.5 rounded-full font-sans font-black flex items-center gap-1">
-                    <Sparkles className="w-2.5 h-2.5 animate-pulse" /> 50+ MODÈLES DISPONIBLES
+                <div className="flex flex-wrap justify-center gap-1.5 mb-5 select-none animate-fade-in">
+                  <span className="text-[9.5px] bg-orange-50 text-[#FF6600] border border-orange-100/60 px-2.5 py-0.5 rounded-full font-sans font-black flex items-center gap-1">
+                    🧡 Orange Money & Wave Acceptés
                   </span>
                   <span className="text-[9px] bg-zinc-100 text-zinc-900 px-2.5 py-0.5 rounded-full font-bold">
                     ✦ Baskets Exclusives
@@ -1325,6 +1261,8 @@ Merci !`;
                   </a>
                 </div>
               </div>
+
+
 
               {/* STORIES SELECTOR */}
               <div id="stories-ribbon" className="border-t border-b border-zinc-100 py-3.5 my-3 px-4 bg-zinc-50/50">
@@ -1391,7 +1329,7 @@ Merci !`;
 
               {/* PRODUCTS FLUID GRID */}
               <div id="product-grid" className={`px-4 py-4 flex-grow ${perf.tier === 'high' ? 'contain-performance' : ''}`}>
-                <div className="grid grid-cols-2 gap-3.5">
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 md:gap-6">
                   {filteredProducts.map((p) => {
                     const isWish = wishlist.includes(p.id);
                     return (
@@ -1467,13 +1405,13 @@ Merci !`;
                 </div>
               </div>
 
-              {/* VIP CLUB NEWSLETTER */}
+               {/* VIP CLUB NEWSLETTER */}
               <div id="newsletter" className="mx-4 mt-6 mb-4 p-5 rounded-3xl bg-zinc-50 border border-zinc-100 text-center relative overflow-hidden">
                 <h3 className="font-sans text-xs font-black text-black tracking-wide uppercase mb-1">
-                  Offre de Bienvenue
+                  Rejoignez le Club VIP STROLLO
                 </h3>
                 <p className="text-[11px] text-zinc-500 mb-4 px-4 leading-relaxed">
-                  Abonnez-vous à notre newsletter pour débloquer <strong className="text-red-600">-15% de réduction</strong> sur votre premier achat.
+                  Abonnez-vous pour être informé en premier lors des arrivages exclusifs de baskets, crocs de prestige et ventes privées.
                 </p>
 
                 {!isSubscribed ? (
@@ -1497,18 +1435,13 @@ Merci !`;
                   <motion.div 
                     initial={{ opacity: 0, scale: 0.95 }}
                     animate={{ opacity: 1, scale: 1 }}
-                    className="p-3 bg-red-50/50 border border-red-200 rounded-xl flex flex-col items-center justify-center gap-2"
+                    className="p-3 bg-emerald-50/50 border border-emerald-200 rounded-xl flex flex-col items-center justify-center gap-2"
                   >
-                    <div className="w-6 h-6 rounded-full bg-red-600 text-white flex items-center justify-center">
+                    <div className="w-6 h-6 rounded-full bg-emerald-600 text-white flex items-center justify-center">
                       <Check className="w-3.5 h-3.5 stroke-[3]" />
                     </div>
-                    <p className="text-[11px] text-zinc-900 font-semibold mb-0">Code de réduction actif !</p>
-                    <div className="flex items-center gap-1.5 bg-white border border-red-600/30 px-3 py-1 rounded-lg">
-                      <span className="font-mono text-xs font-extrabold text-red-600">SOL15</span>
-                      <button onClick={copyPromoCode} className="text-[10px] text-zinc-500 hover:text-black font-bold">
-                        Copier
-                      </button>
-                    </div>
+                    <p className="text-[11px] text-emerald-950 font-semibold mb-0">Inscription réussie !</p>
+                    <p className="text-[10px] text-zinc-500">Bienvenue dans le club. Vous recevrez nos alertes arrivages de prestige très bientôt.</p>
                   </motion.div>
                 )}
               </div>
@@ -2109,8 +2042,40 @@ Merci !`;
                               value={formData.address}
                               onChange={handleCheckoutFormChange}
                               placeholder="Karpala, face à la Clinique Kassam" 
-                              className="w-full bg-zinc-50 text-zinc-900 text-xs px-3.5 py-2.5 rounded-xl border border-zinc-200 focus:ring-1 focus:ring-red-600 outline-none"
+                              className="w-full bg-zinc-50 text-zinc-900 text-xs px-3.5 py-2.5 rounded-xl border border-zinc-200 focus:ring-1 focus:ring-red-600 outline-none select-all"
                             />
+                          </div>
+
+                          <div>
+                            <label className="block text-[10px] font-bold text-zinc-900 uppercase tracking-wider mb-2">Mode de règlement préféré</label>
+                            <div className="grid grid-cols-2 gap-2 text-zinc-900 select-all">
+                              {[
+                                { id: 'orange_money', label: 'Orange Money 🧡', desc: 'Faire un dépôt OM' },
+                                { id: 'wave', label: 'Wave Mobile 💙', desc: 'Transfert Wave rapide' },
+                                { id: 'moov_money', label: 'Moov Money 💚', desc: 'Moov Flooz' },
+                                { id: 'cash', label: 'Espèces à la livraison 💵', desc: 'À la remise du colis' }
+                              ].map((option) => (
+                                <label 
+                                  key={option.id}
+                                  className={`p-3 rounded-xl border flex flex-col cursor-pointer transition-all ${
+                                    formData.paymentMethod === option.id 
+                                      ? 'border-orange-500 bg-orange-50/20 shadow-sm font-bold' 
+                                      : 'border-zinc-200 hover:bg-zinc-50'
+                                  }`}
+                                >
+                                  <input 
+                                    type="radio" 
+                                    name="paymentMethod" 
+                                    value={option.id} 
+                                    checked={formData.paymentMethod === option.id}
+                                    onChange={handleCheckoutFormChange}
+                                    className="sr-only"
+                                  />
+                                  <span className="text-[11px] font-black">{option.label}</span>
+                                  <span className="text-[9px] text-zinc-400 mt-0.5">{option.desc}</span>
+                                </label>
+                              ))}
+                            </div>
                           </div>
 
                           <div className="pt-4 border-t border-zinc-100 flex gap-3 text-xs">
@@ -2271,10 +2236,6 @@ Merci !`;
             </AnimatePresence>
 
 
-
-          </div> {/* Phone Frame Ends */}
-
-        </div> {/* Right Col Ends */}
 
       </div>
 
